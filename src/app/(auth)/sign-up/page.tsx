@@ -70,7 +70,11 @@ const SignUpForm = () => {
     try {
       const response = await axios.post<ApiResponse>("/api/sign-up", data);
 
-      toast.success("Success", { description: response.data.message });
+      toast.success("Success", {
+        description: (
+          <span className="text-green-500">{response.data.message}</span>
+        ),
+      });
 
       router.replace(`/verify/${username}`);
     } catch (error) {
@@ -80,7 +84,9 @@ const SignUpForm = () => {
       let errorMessage = axiosError.response?.data.message;
       ("There was a problem with your sign up. Please try again");
 
-      toast.error("Error", { description: errorMessage });
+      toast.error("Error", {
+        description: <span className="text-red-500">{errorMessage}</span>,
+      });
     } finally {
       setIsSubmitting(false);
     }
