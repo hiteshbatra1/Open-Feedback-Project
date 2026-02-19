@@ -122,7 +122,7 @@ const UserDashboard = () => {
 
   if (!session || !session.user) {
     return (
-      <div>
+      <div className="my-8 mx-4 md:mx-8 lg:mx-auto p-6 bg-white rounded min-h-screen w-full max-w-6xl">
         <h1 className="text-2xl font-bold text-center mt-10 ">
           Please log in to view your dashboard
         </h1>
@@ -145,7 +145,7 @@ const UserDashboard = () => {
     });
   };
   return (
-    <div className="my-8 mx-4 md:mx-8 lg:mx-auto p-6 bg-white rounded w-full max-w-6xl">
+    <div className="my-8 mx-4 md:mx-8 lg:mx-auto p-6 bg-white rounded min-h-screen w-full max-w-6xl">
       <h1 className="text-4xl font-bold mb-4">User Dashboard</h1>
       <div className="mb-4">
         <h2 className="text-lg font-semibold mb-2">Copy Your Unique Link</h2>
@@ -198,7 +198,9 @@ const UserDashboard = () => {
             />
           ))
         ) : (
-          <p>No Message To Display</p>
+          <div className=" col-span-1 md:col-span-2 flex flex-col items-center justify-center py-10">
+            <p className=" font-bold">No Messages To Display</p>
+          </div>
         )}
       </div>
     </div>
