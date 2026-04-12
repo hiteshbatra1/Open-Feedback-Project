@@ -1,12 +1,6 @@
 "use client";
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+
+import { Card, CardContent } from "@/components/ui/card";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,7 +13,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "./ui/button";
-import { X } from "lucide-react";
+import { Trash2, Clock } from "lucide-react";
 import { Message } from "@/model/User";
 import { toast } from "sonner";
 import axios, { AxiosError } from "axios";
@@ -38,61 +32,76 @@ export function MessageCard({ message, onMessageDelete }: MessageCardProps) {
         `/api/delete-message/${message._id}`,
       );
 
-      toast.success("Success", {
+      toast.success("Message Deleted", {
         description: (
-          <span className="text-red-500">{response.data.message}</span>
+          <span className="text-emerald-600 font-medium">
+            {response.data.message}
+          </span>
         ),
       });
 
       onMessageDelete(message._id as any);
     } catch (error) {
-      const axiosErorr = error as AxiosError<ApiResponse>;
+      const axiosError = error as AxiosError<ApiResponse>;
 
       toast.error("Error", {
         description: (
           <span className="text-red-500">
-            {axiosErorr.response?.data.message ?? "Failed to delete message"}
+            {axiosError.response?.data.message ?? "Failed to delete message"}
           </span>
         ),
       });
     }
   };
+
   return (
-    <Card className="relative rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 border">
-      <CardContent className="p-5 space-y-3">
-        <div className="absolute top-3 right-3">
+    <Card className="rounded-2xl bg-white shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200 group overflow-hidden">
+      <CardContent className="p-6">
+        <div className="flex justify-between items-start gap-4">
+          <div className="space-y-3 flex-1 min-w-0">
+            <p className="text-gray-700 text-base md:text-lg leading-relaxed italic break-words whitespace-pre-wrap">
+              {message.content}
+            </p>
+
+            <div className="flex items-center text-xs font-medium text-gray-400">
+              <Clock className="w-3.5 h-3.5 mr-1.5 shrink-0" />
+              {dayjs(message.createdAt).format("MMM D, YYYY h:mm A")}
+            </div>
+          </div>
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button
                 size="icon"
                 variant="ghost"
-                className="text-red-500 hover:bg-red-100"
+                className="shrink-0 text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                title="Delete message"
               >
-                <X className="w-5 h-5" />
+                <Trash2 className="w-4 h-4" />
               </Button>
             </AlertDialogTrigger>
-            <AlertDialogContent>
+
+            <AlertDialogContent className="rounded-2xl">
               <AlertDialogHeader>
-                <AlertDialogTitle> Delete this message?</AlertDialogTitle>
+                <AlertDialogTitle>Delete this message?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  This action cannot be undone.
+                  This action cannot be undone. This will permanently remove the
+                  message from your dashboard.
                 </AlertDialogDescription>
               </AlertDialogHeader>
+
               <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={handleDeleteConfirm}>
+                <AlertDialogCancel className="rounded-full">
+                  Cancel
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={handleDeleteConfirm}
+                  className="rounded-full bg-red-600 hover:bg-red-700 text-white"
+                >
                   Delete
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
-        </div>
-        <p className="text-base text-gray-800 leading-relaxed pr-6">
-          {message.content}
-        </p>
-
-        <div className="text-sm">
-          {dayjs(message.createdAt).format("MMM D, YYYY h:mm A")}
         </div>
       </CardContent>
     </Card>
