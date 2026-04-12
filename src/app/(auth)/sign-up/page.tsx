@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import axios, { AxiosError } from "axios";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 import { signUpSchema } from "@/schemas/signUpSchema";
 import {
   Form,
@@ -76,7 +77,22 @@ const SignUpForm = () => {
         ),
       });
 
-      router.replace(`/verify/${username}`);
+      // Directly sign in the user after successful signup
+      const result = await signIn("credentials", {
+        redirect: false,
+        identifier: data.email, // Use email as identifier
+        password: data.password,
+      });
+
+      if (result?.error) {
+        toast.error("Login failed", {
+          description: (
+            <span className="text-red-500">Please try signing in manually</span>
+          ),
+        });
+      } else if (result?.url) {
+        router.replace("/dashboard");
+      }
     } catch (error) {
       console.error("Error during sign up", error);
       const axiosError = error as AxiosError<ApiResponse>;

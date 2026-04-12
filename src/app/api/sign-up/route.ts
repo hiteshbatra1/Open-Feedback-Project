@@ -44,6 +44,7 @@ export async function POST(request: Request) {
         existingUserByEmail.password = hashedPassword;
         existingUserByEmail.verifyCode = verifyCode;
         existingUserByEmail.verifyCodeValidity = new Date(Date.now() + 3600000);
+        existingUserByEmail.isVerified = true; // Set to verified by default
 
         await existingUserByEmail.save();
       }
@@ -59,7 +60,7 @@ export async function POST(request: Request) {
         password: hashedPassword,
         verifyCode,
         verifyCodeValidity: validityDate,
-        isVerified: false,
+        isVerified: true, // Set to verified by default
         isAcceptingMessage: true,
         messages: [],
       });
@@ -68,26 +69,26 @@ export async function POST(request: Request) {
     }
 
     // send verification email
-    const emailResponse = await sendVerificationEmail(
-      email,
-      username,
-      verifyCode,
-    );
+    // const emailResponse = await sendVerificationEmail(
+    //   email,
+    //   username,
+    //   verifyCode,
+    // );
 
-    if (!emailResponse.success) {
-      return Response.json(
-        {
-          success: false,
-          message: emailResponse.message,
-        },
-        { status: 500 },
-      );
-    }
+    // if (!emailResponse.success) {
+    //   return Response.json(
+    //     {
+    //       success: false,
+    //       message: emailResponse.message,
+    //     },
+    //     { status: 500 },
+    //   );
+    // }
 
     return Response.json(
       {
         success: true,
-        message: "User registred successfully. Please verify your email",
+        message: "User registered successfully",
       },
       { status: 201 },
     );
